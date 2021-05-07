@@ -2,18 +2,17 @@ import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { UserModule } from './user/user.module';
-import { BookModule } from './book/book.module';
 import { AuthModule } from './auth/auth.module';
 import { GraphQLModule } from '@nestjs/graphql';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule } from '@nestjs/config';
 import * as Joi from 'joi';
 import { User } from './user/entities/user.entity';
-import { Book } from './book/entities/book.entity';
+import { join } from 'path';
+import { DistrictModule } from './district/district.module';
 
 @Module({
   imports: [UserModule, 
-    BookModule, 
     AuthModule,
     ConfigModule.forRoot({
       isGlobal: true,
@@ -25,19 +24,17 @@ import { Book } from './book/entities/book.entity';
         DB_NAME: Joi.string().required(),
       })
     }),
-    GraphQLModule.forRoot({
-      autoSchemaFile: 'schema.gql',
-    }),
-    TypeOrmModule.forRoot({
-      type: 'mysql',
-      host: process.env.DB_HOST,
-      port: +process.env.DB_PORT,
-      username: process.env.DB_USERNAME,
-      password: process.env.DB_PASSWORD,
-      database: process.env.DB_NAME,
-      entities: [User, Book],
-      synchronize: true,
-    })
+    // TypeOrmModule.forRoot({
+    //   type: 'mysql',
+    //   host: process.env.DB_HOST,
+    //   port: +process.env.DB_PORT,
+    //   username: process.env.DB_USERNAME,
+    //   password: process.env.DB_PASSWORD,
+    //   database: process.env.DB_NAME,
+    //   entities: [User],
+    //   synchronize: true,
+    // }),
+    DistrictModule
   ],
   controllers: [AppController],
   providers: [AppService],
