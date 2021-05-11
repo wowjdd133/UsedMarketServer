@@ -1,10 +1,5 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-enum LoginType {
-  EMAIL
-  KAKAO
-  NAVER
-  APPLE
+generator client {
+  provider = "prisma-client-js"
 }
 
 datasource db {
@@ -12,36 +7,40 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-generator client {
-  provider = "prisma-client-js"
-}
-
 model User {
-  id Int @default(autoincrement()) @id
-  email String
-  name String
-  password String?
-  phone_number String @unique
-  verified Boolean @default(false)
-  login_type LoginType @default(EMAIL)
-  created_at DateTime @default(now())
+  id           Int           @id @default(autoincrement())
+  email        String
+  name         String
+  password     String?
+  phone_number String        @unique
+  verified     Boolean       @default(false)
+  login_type   LoginType     @default(EMAIL)
+  created_at   DateTime      @default(now())
   verification Verification?
+  current_hashed_refresh_token String?
 
-  @@unique([email,login_type])
+  @@unique([email, login_type])
 }
 
 model Verification {
-  id Int @default(autoincrement()) @id
-  code String
-  user User @relation(fields: [user_id], references: [id])
-  user_id Int
+  id      Int    @id @default(autoincrement())
+  code    String
+  user_id Int    @unique
+  user    User   @relation(fields: [user_id], references: [id])
 }
 
 model District {
-  id Int @default(autoincrement()) @id
-  sig_cd String
+  id           Int    @id @default(autoincrement())
+  sig_cd       String
   sig_kor_name String
   sig_eng_name String
-  lat Float
-  lng Float
+  lat          Float
+  lng          Float
+}
+
+enum LoginType {
+  EMAIL
+  KAKAO
+  NAVER
+  APPLE
 }
