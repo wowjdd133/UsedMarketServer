@@ -15,9 +15,9 @@ export class JwtRefreshStrategy extends PassportStrategy(
         private readonly userService: UserService,
     ) {
         super({
-            jwtfromRequest: ExtractJwt.fromExtractors([
+            jwtFromRequest: ExtractJwt.fromExtractors([
                 (req) => {
-                    return req.cookies.Refresh;
+                    return req?.cookies?.Refresh;
                 },
             ]),
             secretOrKey: configService.get('JWT_REFRESH_TOKEN_SECRET'),
