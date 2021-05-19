@@ -9,17 +9,13 @@ datasource db {
 
 model User {
   id           Int           @id @default(autoincrement())
-  // email        String
   device_id String @unique
   name         String?
-  // password     String?
   phone_number String        @unique
-  // login_type   LoginType     @default(EMAIL)
-  created_at   DateTime      @default(now())
-  // verification Verification?
+  created_at   DateTime      @default(now())  
   current_hashed_refresh_token String?
-
-  // @@unique([email, login_type])
+  district District @relation(fields: [districtId], references: [id])
+  districtId Int
 }
 
 model Verification {
@@ -39,6 +35,7 @@ model Verification {
 model District {
   id           Int    @id @default(autoincrement())
   sig_cd       String
+  users User[]
   sig_kor_name String
   sig_eng_name String
   lat          Float

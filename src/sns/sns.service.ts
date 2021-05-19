@@ -37,12 +37,10 @@ export class SnsService {
 
             const korPhoneNumber = "82" + phoneNumber;
 
-            console.log(korPhoneNumber);
-
             return this._sns
                 .publish({
                     Message: code.toString(),
-                    PhoneNumber: phoneNumber,
+                    PhoneNumber: korPhoneNumber,
                 })
                 .promise()
                 .then(async (info: PublishResponse) => {

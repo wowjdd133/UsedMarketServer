@@ -7,6 +7,14 @@ import * as seoul_district from '../../seoul_district.json';
 export class DistrictService {
     constructor(private readonly prisma: PrismaService) {}
 
+    async getNearDistrict(lat:number, lng: number) {
+        try {   
+            return await this.prisma.$queryRaw(`SELECT *, ST_DISTANCE_SPHERE(POINT(${lng}, ${lat}), POINT(lng, lat)) AS dist from district ORDER BY dist`);
+        } catch (err) {
+            throw err;
+        }
+    }
+
     async initDistrict() {
         try {
             return await Promise.all(seoul_district.DATA.map(async (item) => {

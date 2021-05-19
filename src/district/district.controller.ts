@@ -1,4 +1,4 @@
-import { Controller, Post } from '@nestjs/common';
+import { Controller, Get, Post } from '@nestjs/common';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { DistrictService } from './district.service';
 
@@ -8,6 +8,11 @@ export class DistrictController {
     constructor(
         private readonly districtService:DistrictService
     ){}
+
+    @Get('near')
+    getNearDistrict() {
+        return this.districtService.getNearDistrict(37.665, 127.031);
+    }
 
     @ApiOperation({
         summary: '시군구 - 구 init api',

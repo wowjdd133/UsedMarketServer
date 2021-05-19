@@ -15,11 +15,16 @@ export class AuthService {
     ) {}
 
     //unqiue error
-    async register({deviceId, phoneNumber}:RegisterDto) {
+    async register({deviceId, phoneNumber, distrctId}:RegisterDto) {
         try {
             const { ...user } = await this.userService.createUser({
                 device_id: deviceId,
-                phone_number: phoneNumber
+                phone_number: phoneNumber,
+                district: {
+                    connect: {
+                        id: distrctId
+                    }
+                }
             });
 
             return user;
@@ -27,8 +32,6 @@ export class AuthService {
             throw err;
         }
     }
-
-
 
     getCookieWithJwtAccessToken(id: number) {
         const payload = {id};
