@@ -15,10 +15,10 @@ export class UserController {
         `
     })
     @Get()
-    findAll(@Query() {skip, take}:FindAllDto) {
+    findAll(@Query() {skip, limit}:FindAllDto) {
         return this.userService.findAll({
             skip: skip,
-            take: take,
+            take: limit,
             orderBy: {
                 created_at: 'asc'
             }
