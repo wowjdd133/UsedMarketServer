@@ -8,6 +8,7 @@ import * as Joi from 'joi';
 import { DistrictModule } from './district/district.module';
 import { PrismaService } from './prisma/prisma.service';
 import { PrismaModule } from './prisma/prisma.module';
+import { SnsModule } from './sns/sns.module';
 
 @Module({
   imports: [UserModule, 
@@ -21,14 +22,18 @@ import { PrismaModule } from './prisma/prisma.module';
         DB_PASSWORD: Joi.string().required(),
         DB_NAME: Joi.string().required(),
         DATABASE_URL: Joi.string().required(),
-        JWT_ACCESS_TOKEN_SCRECT: Joi.string().required(),
+        JWT_ACCESS_TOKEN_SECRET: Joi.string().required(),
         JWT_ACCESS_TOKEN_EXPIRATION_TIME: Joi.string().required(),
-        JWT_REFRESH_TOKEN_SCRECT: Joi.string().required(),
+        JWT_REFRESH_TOKEN_SECRET: Joi.string().required(),
         JWT_REFRESH_TOKEN_EXPIRATION_TIME: Joi.string().required(),
+        AWS_SNS_ACCESS_ID: Joi.string().required(),
+        AWS_SNS_SECRET_KEY: Joi.string().required(),
+        AWS_SNS_REGION: Joi.string().required(),
       })
     }),
     DistrictModule,
-    PrismaModule
+    PrismaModule,
+    SnsModule
   ],
   controllers: [AppController],
   providers: [AppService],

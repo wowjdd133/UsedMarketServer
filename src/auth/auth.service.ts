@@ -1,7 +1,6 @@
 import { Body, HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { UserService } from 'src/user/user.service';
 import { JwtService } from '@nestjs/jwt';
-import { LoginType, Prisma } from '.prisma/client';
 import { compare } from 'bcrypt';
 import { ConfigService } from '@nestjs/config';
 import { RegisterDto } from './dto/register.dto';

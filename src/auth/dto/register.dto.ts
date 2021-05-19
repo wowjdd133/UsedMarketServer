@@ -1,11 +1,8 @@
 import { Transform } from "class-transformer";
-import { IsPhoneNumber, IsString } from "class-validator";
+import { IsString } from "class-validator";
+import { PhoneNumberDto } from "src/common/dto/phoneNumber.dto";
 
-export class RegisterDto {
-    @IsPhoneNumber("KR")
-    @Transform((value) => value.replace(/\-/g,""))
-    phoneNumber: string;
-
+export class RegisterDto extends PhoneNumberDto {
     @IsString()
     deviceId: string;
 }

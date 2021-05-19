@@ -22,6 +22,13 @@ model User {
   // @@unique([email, login_type])
 }
 
+model Verification {
+  id Int @id @default(autoincrement())
+  device_id String
+  code Int
+  created_at DateTime @default(now())
+}
+
 // model Verification {
 //   id      Int    @id @default(autoincrement())
 //   code    String

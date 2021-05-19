@@ -21,7 +21,8 @@ export class AuthController {
             credentials: {
                 accessKeyId: configService.get("AWS_SNS_ACCESS_ID"),
                 secretAccessKey: configService.get("AWS_SNS_REGION")
-            }
+            },
+            region: configService.get("AWS_SNS_REGION")
         })
     }
 
