@@ -13,40 +13,7 @@ export class AuthService {
         private readonly userService: UserService,
         private readonly jwtService: JwtService,
         private readonly configService: ConfigService,
-        private readonly SALT_ROUNDS = 10
     ) {}
-
-    // async validateUser(): Promise<any> {
-    //     try {
-    //         const user = await this.userService.findOne({
-    //             where: {
-    //                 email_login_type: {
-    //                     email,
-    //                     login_type: loginType
-    //                 }
-    //             }
-    //         });
-    
-    //         if(user) {
-    //             if(loginType === "EMAIL") {
-    //                 await this.validatePassword(plainTextPassword, user.password);
-    //             }
-    //         }
-    //     } catch (err) {
-    //         console.error(err);
-    //         throw new HttpException('Wrong credentials provided', HttpStatus.BAD_REQUEST);
-    //     }
-    // }
-
-    // private async validatePassword(
-    //     plainTextPassword: string,
-    //     hashedPassword: string
-    // ) {
-    //     const match = await compare(plainTextPassword, hashedPassword);
-    //     if(!match) {
-    //         throw new HttpException('Wrong credentials provided', HttpStatus.BAD_REQUEST);
-    //     }
-    // }
 
     //unqiue error
     async register({deviceId, phoneNumber}:RegisterDto) {
