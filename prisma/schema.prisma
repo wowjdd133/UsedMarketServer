@@ -7,17 +7,6 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model User {
-  id           Int           @id @default(autoincrement())
-  device_id String @unique
-  name         String?
-  phone_number String        @unique
-  created_at   DateTime      @default(now())  
-  current_hashed_refresh_token String?
-  district District @relation(fields: [districtId], references: [id])
-  districtId Int
-}
-
 model Verification {
   id Int @id @default(autoincrement())
   device_id String
@@ -25,26 +14,103 @@ model Verification {
   created_at DateTime @default(now())
 }
 
-// model Verification {
-//   id      Int    @id @default(autoincrement())
-//   code    String
-//   user_id Int    @unique
-//   user    User   @relation(fields: [user_id], references: [id])
+model User {
+  id           Int           @id @default(autoincrement())
+  device_id String @unique
+  name         String?
+  phone_number String        @unique
+  created_at   DateTime      @default(now())  
+  current_hashed_refresh_token String?
+  status UserStatus @default(ACTIVE)
+  exited_at DateTime?
+  district_id Int
+  district District @relation(fields: [district_id], references: [id])
+  offer_price OfferPrice[]
+  wish_product WishProduct[]
+  review Review[]
+}
+
+// model UserScore {
+//   id Int @id @default(autoincrement())
+
 // }
+
+model Product {
+  id Int @id @default(autoincrement())
+  title String
+  status ProductStatus @default(SELL)
+  price Int
+  created_at DateTime @default(now())
+  category_id Int
+  category Category @relation(fields: [category_id], references: [id])
+  district_id Int
+  district District @relation(fields: [district_id], references: [id])
+  view_count Int @default(0)
+  description String?
+  is_able_offer Boolean @default(false)
+  offer_price OfferPrice[]
+  wish_product WishProduct[]
+  review Review[]
+  product_image ProductImage[]
+}
+
+model ProductImage {
+  id Int @id @default(autoincrement())
+  product_id Int
+  product Product @relation(fields: [product_id], references: [id])
+  key String
+  url String
+}
+
+model Review {
+  id Int @id @default(autoincrement())
+  user_id Int
+  user User @relation(fields: [user_id], references: [id])
+  product_id Int
+  product Product @relation(fields: [product_id], references: [id])
+}
+
+model WishProduct {
+  id Int @id @default(autoincrement())
+  user_id Int
+  user User @relation(fields: [user_id], references: [id])
+  product_id Int
+  product Product @relation(fields: [product_id], references: [id])
+}
+
+model OfferPrice {
+  id Int @id @default(autoincrement())
+  is_accept Boolean?
+  user_id Int
+  user User @relation(fields: [user_id], references: [id])
+  product_id Int
+  product Product @relation(fields: [product_id], references: [id])
+}
+
+model Category {
+  id Int @id @default(autoincrement())
+  name String
+  products Product[]
+}
 
 model District {
   id           Int    @id @default(autoincrement())
   sig_cd       String
   users User[]
+  products Product[]
   sig_kor_name String
   sig_eng_name String
   lat          Float
   lng          Float
 }
 
-// enum LoginType {
-//   EMAIL
-//   KAKAO
-//   NAVER
-//   APPLE
-// }
+enum ProductStatus {
+  SELL
+  RESERVATION
+  SOLD_OUT
+}
+
+enum UserStatus {
+  ACTIVE
+  EXIT
+}
