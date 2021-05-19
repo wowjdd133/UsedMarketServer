@@ -9,25 +9,25 @@ datasource db {
 
 model User {
   id           Int           @id @default(autoincrement())
-  email        String
-  name         String
-  password     String?
+  // email        String
+  device_id String @unique
+  name         String?
+  // password     String?
   phone_number String        @unique
-  verified     Boolean       @default(false)
-  login_type   LoginType     @default(EMAIL)
+  // login_type   LoginType     @default(EMAIL)
   created_at   DateTime      @default(now())
-  verification Verification?
+  // verification Verification?
   current_hashed_refresh_token String?
 
-  @@unique([email, login_type])
+  // @@unique([email, login_type])
 }
 
-model Verification {
-  id      Int    @id @default(autoincrement())
-  code    String
-  user_id Int    @unique
-  user    User   @relation(fields: [user_id], references: [id])
-}
+// model Verification {
+//   id      Int    @id @default(autoincrement())
+//   code    String
+//   user_id Int    @unique
+//   user    User   @relation(fields: [user_id], references: [id])
+// }
 
 model District {
   id           Int    @id @default(autoincrement())
@@ -38,9 +38,9 @@ model District {
   lng          Float
 }
 
-enum LoginType {
-  EMAIL
-  KAKAO
-  NAVER
-  APPLE
-}
+// enum LoginType {
+//   EMAIL
+//   KAKAO
+//   NAVER
+//   APPLE
+// }
