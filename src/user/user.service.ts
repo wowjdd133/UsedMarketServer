@@ -1,12 +1,18 @@
 import { Prisma, User } from '.prisma/client';
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { compare, hash } from 'bcrypt';
 import { SSL_OP_TLS_BLOCK_PADDING_BUG } from 'constants';
+import { ErrorStatus } from 'src/common/enums/errorStatus.enum';
+import { DistrictService } from 'src/district/district.service';
+import { GpsDto } from 'src/district/dto/gps.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
 
 @Injectable()
 export class UserService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly districts: DistrictService
+  ) {}
   
   public findAll(params: {
     skip?: number;
@@ -101,4 +107,42 @@ export class UserService {
       }
     })
   }
+
+  async certificateUserDistrict(id: number, {lat, lng}: GpsDto) {
+    try {
+        const districtData = await this.districts.getNearDistrict({lat, lng, skip: 0, limit: 1});
+
+        if(districtData) {
+            if(districtData.district > 5000) {
+                throw new HttpException({
+                    status: ErrorStatus.NEAR_DISTRICT_NOT_FOUND,
+                    message: "가까운 구를 찾을 수 없습니다"
+                }, HttpStatus.BAD_REQUEST)
+            }
+
+            const user = await this.updateUser({
+              data: {
+                district: {
+                  connect: {
+                    id: districtData.id
+                  }
+                }
+              },
+              where: {
+                id: id
+              }
+            })
+
+            return user;
+        } else {
+            throw new HttpException({
+                status:HttpStatus.INTERNAL_SERVER_ERROR,
+                message:'Internal Server Error',
+            }, HttpStatus.INTERNAL_SERVER_ERROR)
+        }
+    } catch (err) {
+        throw err;
+    }
+}
+  
 }

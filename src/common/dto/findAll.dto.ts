@@ -6,12 +6,12 @@ export class FindAllDto {
     @IsNumber()
     @IsOptional()
     @ApiProperty()
-    @Transform(value => value ? Number(value) : undefined)
+    @Transform(value => Number(value))
     skip?: number;
 
     @IsNumber()
     @IsOptional()
     @ApiProperty()
-    @Transform(value => value ? Number(value) : undefined)
+    @Transform(value => Number(value))
     limit?: number;
 }

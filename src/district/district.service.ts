@@ -1,5 +1,6 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { District, Prisma, PrismaClient } from '@prisma/client';
+import { ErrorStatus } from 'src/common/enums/errorStatus.enum';
 import { PrismaService } from 'src/prisma/prisma.service';
 import * as seoul_district from '../../seoul_district.json';
 import { GetNearDistrict } from './dto/getNearDistrict.dto';
@@ -10,7 +11,8 @@ export class DistrictService {
 
     async getNearDistrict({lat, lng, skip = 0, limit = 10}:GetNearDistrict) {
         try {   
-            return await this.prisma.$queryRaw(`SELECT *, ST_DISTANCE_SPHERE(POINT(${lng}, ${lat}), POINT(lng, lat)) AS dist from district ORDER BY dist OFFSET ${skip} LIMIT ${limit}`);
+            console.log({lat, lng});
+            return await this.prisma.$queryRaw(`SELECT *, ST_DISTANCE_SPHERE(POINT(${lng}, ${lat}), POINT(lng, lat)) AS dist from district ORDER BY dist LIMIT ${limit} OFFSET ${skip}`);
         } catch (err) {
             throw err;
         }

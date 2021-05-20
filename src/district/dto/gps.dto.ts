@@ -1,9 +1,8 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { Transform } from "class-transformer";
 import { IsNumber } from "class-validator";
-import { FindAllDto } from "src/common/dto/findAll.dto";
 
-export class GetNearDistrict extends FindAllDto {
+export class GpsDto {
     @ApiProperty()
     @IsNumber()
     @Transform(value => Number(value))
