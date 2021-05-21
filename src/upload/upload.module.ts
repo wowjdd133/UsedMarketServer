@@ -6,6 +6,7 @@ import { UploadService } from './upload.service';
   imports: [
     ConfigModule
   ],
-  providers: [UploadService]
+  providers: [UploadService],
+  exports: [UploadService]
 })
 export class UploadModule {}

@@ -30,7 +30,6 @@ export class AuthController {
 
     @Post('register')
     async register(@Body() dto:RegisterDto) {
-        //loginTypeToken check
         return this.authService.register(dto);
     }
 
