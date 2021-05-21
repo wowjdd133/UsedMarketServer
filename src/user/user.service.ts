@@ -113,6 +113,7 @@ export class UserService {
 
   async changeProfile(id: number, { name }:ChangeUserProfileDto, file?:Express.Multer.File) {
     try {
+      console.log(file, name);
       if(file) {
         const data = await this.uploads.uploadPublicFile(file, 'profile');
 
