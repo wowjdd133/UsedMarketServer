@@ -9,6 +9,7 @@ import { DistrictModule } from './district/district.module';
 import { PrismaService } from './prisma/prisma.service';
 import { PrismaModule } from './prisma/prisma.module';
 import { SnsModule } from './sns/sns.module';
+import { UploadModule } from './upload/upload.module';
 
 @Module({
   imports: [UserModule, 
@@ -29,11 +30,15 @@ import { SnsModule } from './sns/sns.module';
         AWS_SNS_ACCESS_ID: Joi.string().required(),
         AWS_SNS_SECRET_KEY: Joi.string().required(),
         AWS_SNS_REGION: Joi.string().required(),
+        AWS_ACCESS_ID: Joi.string().required(),
+        AWS_SECRET_KEY: Joi.string().required(),
+
       })
     }),
     DistrictModule,
     PrismaModule,
-    SnsModule
+    SnsModule,
+    UploadModule
   ],
   controllers: [AppController],
   providers: [AppService],
