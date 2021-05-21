@@ -6,12 +6,15 @@ import { ErrorStatus } from 'src/common/enums/errorStatus.enum';
 import { DistrictService } from 'src/district/district.service';
 import { GpsDto } from 'src/district/dto/gps.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
+import { UploadService } from 'src/upload/upload.service';
+import { ChangeUserProfileDto } from './dto/changeProfile.dto';
 
 @Injectable()
 export class UserService {
   constructor(
     private readonly prisma: PrismaService,
-    private readonly districts: DistrictService
+    private readonly districts: DistrictService,
+    private readonly uploads: UploadService
   ) {}
   
   public findAll(params: {
@@ -106,6 +109,44 @@ export class UserService {
         id: id
       }
     })
+  }
+
+  async changeProfile(id: number, { name }:ChangeUserProfileDto, file?:Express.Multer.File) {
+    try {
+      if(file) {
+        const data = await this.uploads.uploadPublicFile(file, 'profile');
+
+        console.log(data.Location);
+        const updateData = await this.updateUser({
+          data: {
+            url: data.Location,
+            name: name
+          },
+          where: {
+            id: id
+          }
+        });
+
+        console.log(updateData);
+
+        return updateData
+      } else {
+        const updateData = await this.updateUser({
+          data: {
+            name: name
+          },
+          where: {
+            id: id
+          }
+        });
+
+        return updateData;
+      }
+    } catch (err) {
+      console.error(err);
+      throw err;
+    }
+    
   }
 
   async certificateUserDistrict(id: number, {lat, lng}: GpsDto) {

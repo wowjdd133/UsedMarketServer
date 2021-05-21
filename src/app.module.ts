@@ -32,7 +32,8 @@ import { UploadModule } from './upload/upload.module';
         AWS_SNS_REGION: Joi.string().required(),
         AWS_ACCESS_ID: Joi.string().required(),
         AWS_SECRET_KEY: Joi.string().required(),
-
+        AWS_REGION: Joi.string().required(),
+        AWS_BUCKET_NAME: Joi.string().required(),
       })
     }),
     DistrictModule,
