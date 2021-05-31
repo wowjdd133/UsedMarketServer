@@ -51,9 +51,9 @@ export class SnsService {
                         message: "폰 번호가 유효하지 않습니다."
                     }, HttpStatus.BAD_REQUEST)
                 }
+            } else {
+                throw new HttpException('Internal Server Error', HttpStatus.INTERNAL_SERVER_ERROR);
             }
-
-            throw new HttpException('Internal Server Error', HttpStatus.INTERNAL_SERVER_ERROR);
         } catch (err) {
             console.error(err);
             throw err;

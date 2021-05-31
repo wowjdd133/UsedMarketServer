@@ -9,6 +9,7 @@ import { RegisterDto } from './dto/register.dto';
 import { JwtRefreshGuard } from './guards/jwt-refresh-guard';
 import * as AWS from 'aws-sdk';
 import { ConfigService } from '@nestjs/config';
+import { MatchCode } from './dto/matchCode.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -31,6 +32,11 @@ export class AuthController {
     @Post('register')
     async register(@Body() dto:RegisterDto) {
         return this.authService.register(dto);
+    }
+
+    @Post('code/match')
+    async isMatchCode(@Body() dto:MatchCode) {
+        return this.authService.isMatchCode(dto);
     }
 
     @Post('login')

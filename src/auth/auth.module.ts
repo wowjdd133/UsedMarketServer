@@ -7,6 +7,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { PassportModule } from '@nestjs/passport';
 import { JwtRefreshStrategy } from './strategies/jwt-refresh-strategy';
 import { JwtStrategy } from './strategies/jwt.strategy';
+import { PrismaModule } from 'src/prisma/prisma.module';
 
 @Module({
   imports: [
@@ -22,8 +23,8 @@ import { JwtStrategy } from './strategies/jwt.strategy';
           expiresIn: `${configService.get('JWT_ACCESS_TOKEN_EXPIRATION_TIME')}s`
         }
       })
-    })
-    
+    }),
+    PrismaModule
   ],
   providers: [AuthService, JwtRefreshStrategy, JwtStrategy],
   exports: [AuthService, JwtModule],
