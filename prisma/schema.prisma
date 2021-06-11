@@ -7,6 +7,49 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model ChatRoom {
+  id Int @id @default(autoincrement())
+  created_at DateTime @default(now())
+
+  product_id Int
+  product Product @relation(fields: [product_id], references: [id])
+
+  buyer_id Int
+  user User @relation(fields: [buyer_id], references: [id])
+
+  chat_message ChatMessage[]
+}
+
+model ChatMessage {
+  id Int @id @default(autoincrement())
+  created_at DateTime @default(now())
+  is_read Boolean @default(false)
+  content String
+  content_type ChatContentType
+
+  chat_room_id Int
+  chat_room ChatRoom @relation(fields: [chat_room_id], references: [id])
+
+  sender_id Int
+  user User @relation(fields: [sender_id], references: [id])
+}
+
+model Notification {
+  id Int @id @default(autoincrement())
+  created_at DateTime @default(now())
+  type NotificationType
+  reference_id Int
+  receiver_id Int
+  user User @relation(fields: [receiver_id], references: [id])
+}
+
+model Keyword {
+  id Int @id @default(autoincrement())
+  keyword String
+  user_id Int
+  user User @relation(fields: [user_id], references: [id])
+}
+
 model Verification {
   id Int @id @default(autoincrement())
   device_id String
@@ -33,6 +76,10 @@ model User {
   offer_price OfferPrice[]
   wish_product WishProduct[]
   review Review[]
+  chat_room ChatRoom[]
+  chat_message ChatMessage[]
+  notification Notification[] 
+  keyword Keyword[]
 }
 
 model UserScore {
@@ -61,6 +108,7 @@ model Product {
   wish_product WishProduct[]
   review Review[]
   product_image ProductImage[]
+  chat_room ChatRoom[]
 }
 
 model ProductImage {
@@ -128,4 +176,14 @@ enum ProductStatus {
 enum UserStatus {
   ACTIVE
   EXIT
+}
+
+enum ChatContentType {
+  TEXT
+  IMAGE
+}
+
+enum NotificationType {
+  PRODUCT_PRICE_DOWN
+  COMMUNITY
 }
