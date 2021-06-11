@@ -4,7 +4,9 @@ import { IsPhoneNumber } from "class-validator";
 
 export class PhoneNumberDto {
     @IsPhoneNumber("KR")
-    @ApiProperty()
+    @ApiProperty({
+        default: '01091210769'
+    })
     @Transform((value) => value.replace(/\-/g,""))
     phoneNumber: string;
 }

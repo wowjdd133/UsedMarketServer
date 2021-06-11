@@ -3,15 +3,23 @@ import { Transform } from "class-transformer";
 import { IsNumber, IsOptional } from "class-validator";
 
 export class FindAllDto {
-    @IsNumber()
+    @IsNumber({
+        allowNaN:false
+    })
     @IsOptional()
-    @ApiProperty()
+    @ApiProperty({
+        default: 0
+    })
     @Transform(value => Number(value))
     skip?: number;
 
-    @IsNumber()
+    @IsNumber({
+        allowNaN:false
+    })
     @IsOptional()
-    @ApiProperty()
+    @ApiProperty({
+        default: 10
+    })
     @Transform(value => Number(value))
     limit?: number;
 }

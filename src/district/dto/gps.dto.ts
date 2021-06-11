@@ -4,12 +4,16 @@ import { IsNumber } from "class-validator";
 
 export class GpsDto {
     @ApiProperty()
-    @IsNumber()
+    @IsNumber({
+        allowNaN:false
+    })
     @Transform(value => Number(value))
     lat: number;
 
     @ApiProperty()
-    @IsNumber()
+    @IsNumber({
+        allowNaN:false
+    })
     @Transform(value => Number(value))
     lng: number;
 }

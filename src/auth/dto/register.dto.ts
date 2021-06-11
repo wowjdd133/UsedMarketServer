@@ -5,10 +5,16 @@ import { PhoneNumberDto } from "src/common/dto/phoneNumber.dto";
 
 export class RegisterDto extends PhoneNumberDto {
     @IsString()
-    @ApiProperty()
+    @ApiProperty({
+        default: "test"
+    })
     deviceId: string;
 
-    @IsNumber()
-    @ApiProperty()
-    distrctId: number;
+    @IsNumber({
+        allowNaN: false
+    })
+    @ApiProperty({
+        default: 1
+    })
+    districtId: number;
 }
