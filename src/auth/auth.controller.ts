@@ -1,6 +1,6 @@
 import { User } from '.prisma/client';
 import { Body, Controller, Get, HttpException, HttpStatus, Post, Req, Res, UseGuards } from '@nestjs/common';
-import { Response } from 'express';
+import { Request, Response } from 'express';
 import { ErrorStatus } from 'src/common/enums/errorStatus.enum';
 import { UserService } from 'src/user/user.service';
 import { AuthService } from './auth.service';
@@ -10,6 +10,7 @@ import { JwtRefreshGuard } from './guards/jwt-refresh-guard';
 import * as AWS from 'aws-sdk';
 import { ConfigService } from '@nestjs/config';
 import { MatchCode } from './dto/matchCode.dto';
+import { ApiOperation } from '@nestjs/swagger';
 
 @Controller('auth')
 export class AuthController {
@@ -40,7 +41,10 @@ export class AuthController {
     }
 
     @Post('login')
-    async login(@Body() {deviceId, phoneNumber}:LoginDto, @Res({passthrough: true}) res: Response) {
+    @ApiOperation({
+        summary: '인증 - 로그인',
+    })
+    async login(@Body() {deviceId, phoneNumber}:LoginDto, @Res() res: Response) {
         const user = await this.userService.findOne({
             where: {
                 phone_number: phoneNumber

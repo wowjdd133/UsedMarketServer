@@ -19,14 +19,14 @@ export class AuthService {
     ) {}
 
     //unqiue error
-    async register({deviceId, phoneNumber, distrctId}:RegisterDto) {
+    async register({deviceId, phoneNumber, districtId}:RegisterDto) {
         try {
             const { ...user } = await this.userService.createUser({
                 device_id: deviceId,
                 phone_number: phoneNumber,
                 district: {
                     connect: {
-                        id: distrctId
+                        id: districtId
                     }
                 }
             });
