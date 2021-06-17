@@ -11,9 +11,33 @@ export class DistrictService {
 
     async getNearDistrict({lat, lng, skip = 0, limit = 10}:GetNearDistrict) {
         try {   
-            console.log({lat, lng});
-            return await this.prisma.$queryRaw(`SELECT *, ST_DISTANCE_SPHERE(POINT(${lng}, ${lat}), POINT(lng, lat)) AS dist from district ORDER BY dist LIMIT ${limit} OFFSET ${skip}`);
+            const data = await this.prisma.$queryRaw(`SELECT *, ST_DISTANCE_SPHERE(POINT(${lng}, ${lat}), POINT(lng, lat)) AS dist from district ORDER BY dist LIMIT ${limit} OFFSET ${skip}`);
+            
+            return data;
         } catch (err) {
+            throw err;
+        }
+    }
+
+    async findAll(params: {
+        skip?: number;
+        take?: number;
+        cursor?: Prisma.DistrictWhereUniqueInput;
+        where?: Prisma.DistrictWhereInput;
+        orderBy?: Prisma.ProductOrderByInput
+    }) {
+        const {cursor, orderBy, skip, take, where} = params;
+
+        try {
+            return await this.prisma.district.findMany({
+                skip,
+                take,
+                cursor,
+                where,
+                orderBy,
+            })
+        } catch (err) {
+            console.log(err);
             throw err;
         }
     }
