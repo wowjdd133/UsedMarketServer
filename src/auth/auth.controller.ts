@@ -1,5 +1,5 @@
 import { User } from '.prisma/client';
-import { Body, Controller, Get, HttpException, HttpStatus, Post, Req, Res, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, HttpException, HttpStatus, Post, Req, Res, UseGuards, Query } from '@nestjs/common';
 import { Request, Response } from 'express';
 import { ErrorStatus } from 'src/common/enums/errorStatus.enum';
 import { UserService } from 'src/user/user.service';
@@ -35,9 +35,9 @@ export class AuthController {
         return this.authService.register(dto);
     }
 
-    @Post('code/match')
-    async isMatchCode(@Body() dto:MatchCode) {
-        return this.authService.isMatchCode(dto);
+    @Get('code/match')
+    async isMatchCode(@Query() query:MatchCode) {
+        return this.authService.isMatchCode(query);
     }
 
     @Post('login')

@@ -60,6 +60,9 @@ export class AuthService {
                                 lt: dt
                             }
                         }]
+                    },
+                    select: {
+                        code: true
                     }
                 })
 
@@ -69,6 +72,8 @@ export class AuthService {
                     message: "코드가 일치하지 않습니다."
                 }, HttpStatus.NOT_FOUND);
             }
+
+            //Get인데 삭제하는게 맞을지
 
             await this.prisma.verification
                 .deleteMany({
