@@ -1,4 +1,4 @@
-import { User } from '.prisma/client';
+import { Prisma, User } from '.prisma/client';
 import { Body, Controller, Get, HttpException, HttpStatus, Post, Req, Res, UseGuards, Query } from '@nestjs/common';
 import { Request, Response } from 'express';
 import { ErrorStatus } from 'src/common/enums/errorStatus.enum';
@@ -44,35 +44,14 @@ export class AuthController {
     @ApiOperation({
         summary: '인증 - 로그인',
     })
-    async login(@Body() {deviceId, phoneNumber}:LoginDto, @Res() res: Response) {
-        const user = await this.userService.findOne({
-            where: {
-                phone_number: phoneNumber
-            }
-        });
-
-        if(user.device_id !== deviceId) {
-            throw new HttpException({
-                status: ErrorStatus.DEVICE_INFO_NOT_MATCHED,
-                message: "디바이스 정보가 일치하지 않습니다."
-            }, HttpStatus.BAD_REQUEST)
-        }
-
-        const {
-            accessToken,
-            ...accessOption
-        } = this.authService.getCookieWithJwtAccessToken(user.id);
-
-        const {
-            refreshToken,
-            ...refreshOption
-        } = this.authService.getCookieWithJwtRefreshToken(user.id);
-
-        await this.userService.setCurrentRefreshToken(refreshToken, user.id);
-
+    async login(@Body() loginDto:LoginDto, @Res({passthrough: true}) res: Response) {
+        const {accessToken, refreshToken, user, accessOption, refreshOption} = await this.authService.login(loginDto);
+            
         res.cookie('Authentication', accessToken, accessOption);
         res.cookie('Refresh', refreshToken, refreshOption);
 
+        console.log({user});
+    
         return user;
     }
 

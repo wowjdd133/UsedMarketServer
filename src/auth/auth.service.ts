@@ -8,6 +8,11 @@ import * as bcrypt from 'bcrypt';
 import { MatchCode } from './dto/matchCode.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { ErrorStatus } from 'src/common/enums/errorStatus.enum';
+import { v4 as uuid } from 'uuid';
+import { PrismaClientKnownRequestError } from '@prisma/client/runtime';
+import { PrismaErrorStatus } from 'src/common/enums/prismaErrorStatus.enum';
+import { Prisma } from '.prisma/client';
+import { LoginDto } from './dto/login.dto';
 
 @Injectable()
 export class AuthService {
@@ -16,23 +21,100 @@ export class AuthService {
         private readonly jwtService: JwtService,
         private readonly configService: ConfigService,
         private readonly prisma: PrismaService
-    ) {}
+    ) {
+    }
+
+    async login({deviceId, phoneNumber, districtId}:LoginDto) {
+        //user service 에서 select넣을시 type을 제대로 리턴 못함
+        // 계속 이렇게 써야할듯
+        try {
+            const user = await this.prisma.user.findUnique({
+                where: {
+                    phone_number: phoneNumber
+                }, 
+                select: {
+                    id: true,
+                    device_id: true,
+                    district: {
+                        select: {
+                            id: true,
+                            sig_eng_name: true,
+                            sig_kor_name: true
+                        }
+                    }
+                }
+            });
+    
+            if(user.device_id !== deviceId) {
+                throw new HttpException({
+                    status: ErrorStatus.DEVICE_INFO_NOT_MATCHED,
+                    message: "디바이스 정보가 일치하지 않습니다."
+                }, HttpStatus.BAD_REQUEST)
+            }
+    
+            const {
+                accessToken,
+                ...accessOption
+            } = this.getCookieWithJwtAccessToken(user.id);
+    
+            const {
+                refreshToken,
+                ...refreshOption
+            } = this.getCookieWithJwtRefreshToken(user.id);
+    
+            await this.userService.setCurrentRefreshToken(refreshToken, user.id);
+    
+            return {
+                user,
+                accessToken,
+                accessOption,
+                refreshToken,
+                refreshOption
+            }
+        } catch (err) {
+            throw err;
+        }
+    }
 
     //unqiue error
     async register({deviceId, phoneNumber, districtId}:RegisterDto) {
         try {
-            const { ...user } = await this.userService.createUser({
+            const { id, ...user } = await this.userService.createUser({
                 device_id: deviceId,
                 phone_number: phoneNumber,
                 district: {
                     connect: {
                         id: districtId
-                    }
-                }
-            });
+                    },
+                },
+                name: `user_${uuid()}`
+            }); 
 
-            return user;
+            const district = await this.prisma.district.findUnique({
+                where: {
+                    id: user.district_id
+                },
+                select: {
+                    id: true,
+                    sig_eng_name: true,
+                    sig_kor_name: true
+                }
+            })
+            
+            return {
+                id,
+                district
+            };
         } catch (err) {
+            console.log(err);
+            if(err.code) {
+                if(err.code === PrismaErrorStatus.UNIQUE_CONSTRAINT_ERROR) {
+                    throw new HttpException({
+                        message:'해당 전화번호를 지닌 아이디가 존재합니다.',
+                        status: ErrorStatus.PHONE_NUMBER_ALREADY_EXIST
+                    }, HttpStatus.CONFLICT);
+                }
+            }
             throw err;
         }
     }
