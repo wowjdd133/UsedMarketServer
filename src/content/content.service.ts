@@ -1,5 +1,6 @@
 import { Prisma, Product } from '.prisma/client';
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { ErrorStatus } from 'src/common/enums/errorStatus.enum';
 import { PrismaService } from 'src/prisma/prisma.service';
 
 @Injectable()
@@ -14,9 +15,8 @@ export class ContentService {
         cursor?: Prisma.ProductWhereUniqueInput;
         where?: Prisma.ProductWhereInput;
         orderBy?: Prisma.ProductOrderByInput;
-        userId: number;
     }):Promise<Product[]> {
-        const {cursor, orderBy, skip, take, where, userId} = params;
+        const {cursor, orderBy, skip, take, where} = params;
 
         return this.prisma.product.findMany({
             skip,
@@ -24,13 +24,11 @@ export class ContentService {
             cursor,
             where,
             orderBy,
-            include: {
-                wish_product: {
-                    where: {
-                        user_id: userId,
-                    },
-                }
-            },
+            include:{
+                product_image: true,
+                category: true,
+                district: true,
+            }
         });
     }
 
@@ -43,6 +41,132 @@ export class ContentService {
             where
         });
     }
+
+    public async getOneProduct(parmas: {
+        where?: Prisma.ProductWhereUniqueInput
+    }) {
+        const { where } = parmas;
+
+        return this.prisma.product.findUnique({
+            where,
+            select: {
+                category: {
+                    select: {
+                        name: true
+                    }
+                },
+                created_at: true,
+                description: true,
+                district: {
+                    select: {
+                        sig_kor_name: true
+                    }
+                },
+                id: true,
+                is_able_offer: true,
+                price: true,
+                product_image: {
+                    select: {
+                        url: true
+                    },
+                    orderBy: {
+                        id: 'asc'
+                    }
+                },
+                status: true,
+                title: true,
+                user: {
+                    select: {
+                        name: true,
+                        id: true,
+                        score: true,
+                        district: {
+                            select: {
+                                sig_kor_name: true
+                            }
+                        },
+                        url: true
+                    }
+                },
+                view_count: true,
+                wish_product: {
+                    select: {
+                        user_id: true
+                    },
+                }
+            }
+        })
+    }
+
+    public async getAllProducts(params: {
+        skip?: number;
+        take?: number;
+        cursor?: Prisma.ProductWhereUniqueInput;
+        where?: Prisma.ProductWhereInput;
+        orderBy?: Prisma.ProductOrderByInput;
+    }) {
+      try {
+        const {cursor, orderBy, skip, take, where} = params;
+
+        return this.prisma.product.findMany({
+            where,
+            skip,
+            take,
+            cursor,
+            orderBy,
+            
+            select: {
+                id: true,
+                category: {
+                    select: {
+                        id: true,
+                        name: true
+                    }
+                },
+                description: true,
+                price: true,
+                product_image: {
+                    take: 1,
+                    orderBy: {
+                        id: 'asc'
+                    },
+                    select: {
+                        url: true
+                    }
+                },
+                title: true,
+                created_at: true,
+                user: {
+                    select:{
+                        id: true,
+                        name: true,
+                    }
+                },
+                //include _count로 가능하다고 하는데.. 없음..?
+                wish_product: {
+                    select: {
+                        user_id: true
+                    }
+                },
+                status: true,
+            }
+        })
+      } catch (err) {
+        console.log(err);
+        throw err;
+      }
+    }
+
+    public postProduct(data: Prisma.ProductCreateInput, files:Express.Multer.File[]) {
+        if(!files || files.length === 0) {
+            throw new HttpException({
+                status: ErrorStatus.FILE_NOT_FOUND,
+                message: "파일이 없습니다."
+            }, HttpStatus.BAD_REQUEST)
+        }
+
+        return this.createProduct(data);
+    };
 
     public createProduct(data: Prisma.ProductCreateInput): Promise<Product> {
         return this.prisma.product.create({

@@ -24,7 +24,7 @@ export class UserController {
             take: limit,
             orderBy: {
                 created_at: 'asc'
-            }
+            },
         });
     }
 

@@ -60,6 +60,7 @@ model Verification {
 model User {
   id           Int           @id @default(autoincrement())
   device_id String @unique
+  email String? @unique
   name         String?
   phone_number String        @unique
   url String @default("https://used-market.s3.ap-northeast-2.amazonaws.com/profile/default.png")
@@ -72,6 +73,7 @@ model User {
   status UserStatus @default(ACTIVE)
   
   user_score UserScore[]
+  product Product[]
   district District @relation(fields: [district_id], references: [id])
   offer_price OfferPrice[]
   wish_product WishProduct[]
@@ -96,11 +98,13 @@ model Product {
   created_at DateTime @default(now())
   category_id Int
   district_id Int
+  user_id Int
   view_count Int @default(0)
   description String?
   is_able_offer Boolean @default(false)
   status ProductStatus @default(SELL)
 
+  user User @relation(fields: [user_id], references:[id])
   category Category @relation(fields: [category_id], references: [id])
   district District @relation(fields: [district_id], references: [id])
 
@@ -171,6 +175,7 @@ enum ProductStatus {
   SELL
   RESERVATION
   SOLD_OUT
+  DELETE
 }
 
 enum UserStatus {

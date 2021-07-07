@@ -10,6 +10,7 @@ import { PrismaService } from './prisma/prisma.service';
 import { PrismaModule } from './prisma/prisma.module';
 import { SnsModule } from './sns/sns.module';
 import { UploadModule } from './upload/upload.module';
+import { ContentModule } from './content/content.module';
 
 @Module({
   imports: [UserModule, 
@@ -39,7 +40,8 @@ import { UploadModule } from './upload/upload.module';
     DistrictModule,
     PrismaModule,
     SnsModule,
-    UploadModule
+    UploadModule,
+    ContentModule
   ],
   controllers: [AppController],
   providers: [AppService],

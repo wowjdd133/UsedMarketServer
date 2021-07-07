@@ -1,8 +1,6 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { MulterModuleOptions } from '@nestjs/platform-express';
 import * as AWS from 'aws-sdk';
-import * as MulterS3 from 'multer-s3';
 
 @Injectable()
 export class UploadService {

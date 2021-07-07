@@ -44,6 +44,13 @@ export class AuthService {
                     }
                 }
             });
+
+            if(!user) {
+                throw new HttpException({
+                    status: ErrorStatus.USER_NOT_REGISTERED,
+                    message: "유저가 존재하지 않습니다."
+                }, HttpStatus.NOT_FOUND)
+            }
     
             if(user.device_id !== deviceId) {
                 throw new HttpException({
