@@ -11,6 +11,7 @@ import { PrismaModule } from './prisma/prisma.module';
 import { SnsModule } from './sns/sns.module';
 import { UploadModule } from './upload/upload.module';
 import { ContentModule } from './content/content.module';
+import { ChatModule } from './chat/chat.module';
 
 @Module({
   imports: [UserModule, 
@@ -41,7 +42,8 @@ import { ContentModule } from './content/content.module';
     PrismaModule,
     SnsModule,
     UploadModule,
-    ContentModule
+    ContentModule,
+    ChatModule
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -32,6 +32,16 @@ model ChatMessage {
 
   sender_id Int
   user User @relation(fields: [sender_id], references: [id])
+  chat_image ChatImage[]
+}
+
+model ChatImage {
+  id Int @id @default(autoincrement())
+  key String
+  url String
+  
+  chat_id Int
+  chat ChatMessage @relation(fields: [chat_id], references: [id])
 }
 
 model Notification {

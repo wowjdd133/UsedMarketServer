@@ -1,0 +1,15 @@
+-- AlterTable
+ALTER TABLE `Product` MODIFY `status` ENUM('SELL', 'RESERVATION', 'SOLD_OUT', 'DELETE') NOT NULL DEFAULT 'SELL';
+
+-- CreateTable
+CREATE TABLE `ChatImage` (
+    `id` INTEGER NOT NULL AUTO_INCREMENT,
+    `key` VARCHAR(191) NOT NULL,
+    `url` VARCHAR(191) NOT NULL,
+    `chat_id` INTEGER NOT NULL,
+
+    PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- AddForeignKey
+ALTER TABLE `ChatImage` ADD FOREIGN KEY (`chat_id`) REFERENCES `ChatMessage`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
